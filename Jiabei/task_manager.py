@@ -18,7 +18,7 @@ def check_task(content_dict={}):
     :param content_dict:
     :return:
     """
-    func_dict = {"博客": get_bloglist, "帮助": get_commandmenu, "听歌": get_music}
+    func_dict = {u'博客': get_bloglist, u'帮助': get_commandmenu, u'听歌': get_music}
     text = content_dict["Content"]
     tousername = content_dict["FromUserName"]
     fromusername = content_dict["ToUserName"]
