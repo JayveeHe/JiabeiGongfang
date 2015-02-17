@@ -1,4 +1,5 @@
 # coding=utf-8
+import re
 import music_utils
 
 import WeixinUtils
@@ -13,13 +14,17 @@ def check_task(content_dict={}):
     :param content_dict:
     :return:
     """
-    func_dict = {"m": get_bloglist, "h": get_commandmenu, "s": get_music}
+    func_dict = {"/博客": get_bloglist, "/帮助": get_commandmenu, "/听歌": get_music}
     text = content_dict["Content"]
     tousername = content_dict["FromUserName"]
     fromusername = content_dict["ToUserName"]
-    if text[0] == "-" and len(text) > 1:
-        # 进入功能模式
-        func = func_dict.get(text[1])
+    if text[0] == "/" and len(text) > 1:
+        # 进入功能模式，首先获取命令
+        commd = re.compile(r'/[^ ]*').match(text).group()
+        commd_content = re.compile(r'/[^ ]* ').sub("", text)
+        print commd
+        # print commd_content
+        func = func_dict.get(commd)
         if func is not None:
             # print "function:", text[1]
             return func(content_dict)
@@ -49,7 +54,7 @@ def get_defaultresp(content_dict={}):
     """
     tousername = content_dict["FromUserName"]
     fromusername = content_dict["ToUserName"]
-    reply = "感谢关注加贝工坊！\n可以使用 “-”前缀+字母 进行指令操作，例如：-h"
+    reply = "你好，可以使用 “/”前缀+短语 进行指令操作，例如：/帮助"
     return WeixinUtils.make_singletext(tousername, fromusername, reply)
 
 
@@ -61,9 +66,9 @@ def get_commandmenu(content_dict={}):
     """
     tousername = content_dict["FromUserName"]
     fromusername = content_dict["ToUserName"]
-    str_commandmenu = "-h：查看所有指令\n" \
-                      "-m：查看作者最新博客\n" \
-                      "-s <歌曲名>:搜索音乐"
+    str_commandmenu = "/帮助：查看所有指令\n" \
+                      "/博客：查看作者最新博客\n" \
+                      "/听歌 <歌曲名>：搜索音乐"
     return WeixinUtils.make_singletext(tousername, fromusername, str_commandmenu)
 
 
@@ -76,9 +81,12 @@ def get_music(content_dict={}):
     text = content_dict["Content"]
     tousername = content_dict["FromUserName"]
     fromusername = content_dict["ToUserName"]
-    songname = text.split(" ")[1]
-    songlist = music_utils.get_searchlist(songname, 5)
-    return WeixinUtils.make_news(songlist, tousername, fromusername)
+    songname = re.compile(r'/[^ ]* ').sub("", text)
+    if len(songname) > 0 and songname != "/听歌":
+        songlist = music_utils.get_searchlist(songname, 5)
+        return WeixinUtils.make_news(songlist, tousername, fromusername)
+    else:
+        return WeixinUtils.make_singletext(tousername, fromusername, "请输入歌曲名！")
 
 
 def get_error_resp(content_dict={}):
@@ -89,6 +97,7 @@ def get_error_resp(content_dict={}):
     """
     tousername = content_dict["FromUserName"]
     fromusername = content_dict["ToUserName"]
-    return WeixinUtils.make_singletext(tousername, fromusername, "指令有误,输入-h查看指令列表")
+    return WeixinUtils.make_singletext(tousername, fromusername, "指令有误,输入 /帮助 查看指令列表")
 
-print check_task({"FromUserName": "123123", "ToUserName": "454564", "Content": "-s yellow"})
+
+print check_task({"FromUserName": "123123", "ToUserName": "454564", "Content": "12"})

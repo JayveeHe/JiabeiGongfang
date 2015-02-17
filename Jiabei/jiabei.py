@@ -1,9 +1,10 @@
 # encoding:utf8
+import WeixinUtils
+
 __author__ = 'Jayvee'
 
 from flask import Flask, request, make_response
 import hashlib
-import MsgParser
 
 import task_manager
 
@@ -28,23 +29,22 @@ def jiabei():
             sha1str = hashlib.sha1(newstr)
             temp = sha1str.hexdigest()
             if signature == temp:
-                
+
                 return echostr
             else:
                 return "认证失败，不是微信服务器的请求！"
         else:
             return "你请求的方法是：" + request.method
     else:  # POST
-        # print "POST"
-        # print request.data
-        xmldict = MsgParser.recv_msg(request.data)
-        reply = task_manager.check_task(xmldict)
-        # print reply
-        # reply = MsgParser.submit_msg(xmldict)
+        xmldict = WeixinUtils.recv_msg(request.data)
+        if xmldict["MsgType"] == "Event":
+            reply = WeixinUtils.make_singletext(xmldict["FromUserName"], xmldict["ToUserName"],
+                                                "欢迎关注加贝工坊，输入/帮助 查看相关操作指令。祝愉快！")
+        else:
+            reply = task_manager.check_task(xmldict)
         response = make_response(reply)
         response.content_type = 'application/xml'
         return response
-        # return str(request.data)
 
 
 if __name__ == '__main__':
