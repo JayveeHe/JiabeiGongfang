@@ -1,11 +1,15 @@
 # coding=utf-8
 import re
+import sys
 import music_utils
 
 import WeixinUtils
 import crawlBlog
 
 __author__ = 'Jayvee'
+
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 
 def check_task(content_dict={}):
@@ -14,13 +18,14 @@ def check_task(content_dict={}):
     :param content_dict:
     :return:
     """
-    func_dict = {"/博客": get_bloglist, "/帮助": get_commandmenu, "/听歌": get_music}
+    func_dict = {"博客": get_bloglist, "帮助": get_commandmenu, "听歌": get_music}
     text = content_dict["Content"]
     tousername = content_dict["FromUserName"]
     fromusername = content_dict["ToUserName"]
     if text[0] == "/" and len(text) > 1:
         # 进入功能模式，首先获取命令
         commd = re.compile(r'/[^ ]*').match(text).group()
+        commd = commd[1:]
         commd_content = re.compile(r'/[^ ]* ').sub("", text)
         print commd
         # print commd_content
@@ -100,4 +105,4 @@ def get_error_resp(content_dict={}):
     return WeixinUtils.make_singletext(tousername, fromusername, "指令有误,输入 /帮助 查看指令列表")
 
 
-print check_task({"FromUserName": "123123", "ToUserName": "454564", "Content": "12"})
+print check_task({"FromUserName": "123123", "ToUserName": "454564", "Content": "/帮助 查看"})
