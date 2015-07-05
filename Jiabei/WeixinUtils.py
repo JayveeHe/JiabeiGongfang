@@ -29,7 +29,7 @@ def recv_msg(oriData):
     tousername = xmldata.find("ToUserName").text
     # 消息的类别
     msgtype = xmldata.find("MsgType").text
-    if msgtype == "Event":
+    if msgtype == "event":
         event = xmldata.find("Event").text
         xmldict = {"FromUserName": fromusername, "ToUserName": tousername, "MsgType": msgtype, "Event": event}
     else:

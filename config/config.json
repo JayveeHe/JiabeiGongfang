@@ -1,0 +1,9 @@
+{
+  "LEANCLOUD_APP_ID": "u3h81vuux7wuybgq1qw2bpdcpsfzfotikkn4p7icz742913k",
+  "LEANCLOUD_APP_KEY": "sz2x4l7i3d8xee6ewu89xeld72qa681ze1aupqs0ofumf6ap",
+  "LEANCLOUD_APP_MASTER_KEY": "fb58034shyre2aksodlqmnxhgi9lcjify6347hw3nz44ytjz",
+  "LOGENTRIES_TOKEN": "bcf4e745-893f-4c29-a97e-ce68fca02185",
+  "APP_ENV": "test",
+  "APP_PORT":9527,
+  "LOG_TAG":"JiabeiGongfang"
+}

@@ -17,23 +17,31 @@ def get_searchlist(name, limit):
     html = urllib2.urlopen(req, value).read()
     jsonobj = json.loads(html)
     list = []
-    for obj in jsonobj["result"]["songs"]:
-        name = obj["name"]
-        artistname = obj["artists"][0]["name"]
-        albumname = obj["album"]["name"]
-        songid = obj["id"]
-        details = json.loads(get_songdetails(songid))
-        songurl = "http://music.163.com/m/song/%s" % songid
-        ltemp = [""]
-        ltemp.append(name)
-        ltemp.append("\n")
-        ltemp.append(artistname)
-        ltemp.append("-")
-        ltemp.append(albumname)
-        songtitle = "".join(ltemp)
-        picurl = details["songs"][0]["album"]["picUrl"]
-        list.append(NewsItem(songurl, songtitle, picurl))
-    return list
+    if (jsonobj["result"]["songCount"] != 0):
+        count = 0
+        for obj in jsonobj["result"]["songs"]:
+            name = obj["name"]
+            artistname = obj["artists"][0]["name"]
+            albumname = obj["album"]["name"]
+            songid = obj["id"]
+            details = json.loads(get_songdetails(songid))
+            songurl = "http://music.163.com/m/song/%s" % songid
+            ltemp = [""]
+            ltemp.append(name)
+            ltemp.append("\n")
+            ltemp.append(artistname)
+            ltemp.append("-")
+            ltemp.append(albumname)
+            songtitle = "".join(ltemp)
+            if count==0:
+                picurl = details["songs"][0]["album"]["picUrl"] + "?param=250y250"
+            else:
+                picurl = details["songs"][0]["album"]["picUrl"] + "?param=50y50"
+            count += 1
+            list.append(NewsItem(songurl, songtitle, picurl))
+        return list
+    else:
+        return None
 
 
 # @staticmethod
@@ -45,8 +53,8 @@ def get_songdetails(songid):
     return resp.read()
 
 
-    # ilist = MusicUtils.get_searchlist("半兽人", 5)
+    # ilist = get_searchlist("拥抱", 5)
     # for ii in ilist:
     # print ii.title
     # print ii.url
-    #     print ii.picurl
+    # print ii.picurl

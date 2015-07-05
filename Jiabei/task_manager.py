@@ -18,7 +18,8 @@ def check_task(content_dict={}):
     :param content_dict:
     :return:
     """
-    func_dict = {u'博客': get_bloglist, u'帮助': get_commandmenu, u'听歌': get_music}
+    func_dict = {u'博客': get_bloglist, u'帮助': get_commandmenu,
+                 u'听歌': get_music, u'song': get_music, u's': get_music}
     text = content_dict["Content"]
     tousername = content_dict["FromUserName"]
     fromusername = content_dict["ToUserName"]
@@ -27,7 +28,7 @@ def check_task(content_dict={}):
         commd = re.compile(r'/[^ ]*').match(text).group()
         commd = commd[1:]
         commd_content = re.compile(r'/[^ ]* ').sub("", text)
-        print commd
+        # print commd
         # print commd_content
         func = func_dict.get(commd)
         if func is not None:
@@ -89,7 +90,10 @@ def get_music(content_dict={}):
     songname = re.compile(r'/[^ ]* ').sub("", text)
     if len(songname) > 0 and songname != "/听歌":
         songlist = music_utils.get_searchlist(songname, 5)
-        return WeixinUtils.make_news(songlist, tousername, fromusername)
+        if songlist != None:
+            return WeixinUtils.make_news(songlist, tousername, fromusername)
+        else:
+            return WeixinUtils.make_singletext(tousername, fromusername, "未找到相应的歌曲！")
     else:
         return WeixinUtils.make_singletext(tousername, fromusername, "请输入歌曲名！")
 
@@ -105,4 +109,4 @@ def get_error_resp(content_dict={}):
     return WeixinUtils.make_singletext(tousername, fromusername, "指令有误,输入 /帮助 查看指令列表")
 
 
-print check_task({"FromUserName": "123123", "ToUserName": "454564", "Content": "/帮助 查看"})
+    # print check_task({"FromUserName": "123123", "ToUserName": "454564", "Content": "/帮助 查看"})
