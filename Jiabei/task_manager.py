@@ -74,7 +74,7 @@ def get_commandmenu(content_dict={}):
     fromusername = content_dict["ToUserName"]
     str_commandmenu = "/帮助：查看所有指令\n" \
                       "/博客：查看作者最新博客\n" \
-                      "/听歌 <歌曲名>：搜索音乐"
+                      "/听歌 <歌曲名>或/s <歌曲名>：搜索音乐，例如：/s 我为祖国献石油"
     return WeixinUtils.make_singletext(tousername, fromusername, str_commandmenu)
 
 

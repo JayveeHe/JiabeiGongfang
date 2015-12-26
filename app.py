@@ -1,5 +1,7 @@
 # encoding:utf8
-from Jiabei import WeixinUtils
+import json
+import requests
+from Jiabei import WeixinUtils, task_manager
 
 __author__ = 'Jayvee'
 
@@ -45,6 +47,20 @@ def jiabei():
         response = make_response(reply)
         response.content_type = 'application/xml'
         return response
+
+
+@app.route('/login/', methods=['GET'])
+def login_and_have_fun():
+    code = request.args.get('code')
+    state = request.args.get('state')
+    acess_token = ''
+    get_acesstoken_url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=wx158f7ee3772b322a&secret=4808311ba12d1dd2c6eea47711583cb2&code=%s&grant_type=authorization_code' % code
+    result = requests.get(get_acesstoken_url).content
+    print result
+    rjson = json.loads(result)
+    openid = rjson['openid']
+    print openid
+    return 'code=%s, state=%s, openid=%s' % (code, state, openid)
 
 
 if __name__ == '__main__':

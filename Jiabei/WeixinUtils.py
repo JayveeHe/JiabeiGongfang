@@ -1,5 +1,5 @@
-__author__ = 'Jayvee'
 # coding=utf-8
+__author__ = 'Jayvee'
 import time
 import xml.etree.ElementTree as ET
 import sys

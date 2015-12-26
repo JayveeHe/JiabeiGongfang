@@ -1,1 +1,1 @@
-sudo python jiabei.py &
+sudo nohup python -u jiabei.py &

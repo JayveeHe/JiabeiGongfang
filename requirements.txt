@@ -5,3 +5,5 @@ ndg-httpsclient
 pyasn1
 logentries
 nose
+requests
+beautifulsoup4
