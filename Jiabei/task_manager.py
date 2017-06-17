@@ -1,10 +1,20 @@
 # coding=utf-8
+import json
+import os
 import re
 import sys
-import music_utils
 
+abs_path = os.path.dirname(os.path.abspath(__file__))
+abs_father_path = os.path.dirname(abs_path)
+PROJECT_PATH = abs_father_path
+print 'Used file: %s\nProject path=%s' % (__file__, PROJECT_PATH)
+sys.path.append(PROJECT_PATH)
+sys.path.append(abs_path)
+
+import music_utils
 import WeixinUtils
 import crawlBlog
+from Jiabei.music_taster_utils import get_most_familar_songs
 
 __author__ = 'Jayvee'
 
@@ -19,7 +29,8 @@ def check_task(content_dict={}):
     :return:
     """
     func_dict = {u'博客': get_bloglist, u'帮助': get_commandmenu,
-                 u'听歌': get_music, u'song': get_music, u's': get_music}
+                 u'听歌': get_music, u'song': get_music, u's': get_music, u't': get_similar_songs,
+                 u'风格': get_similar_songs}
     text = content_dict["Content"]
     tousername = content_dict["FromUserName"]
     fromusername = content_dict["ToUserName"]
@@ -74,7 +85,8 @@ def get_commandmenu(content_dict={}):
     fromusername = content_dict["ToUserName"]
     str_commandmenu = "/帮助：查看所有指令\n" \
                       "/博客：查看作者最新博客\n" \
-                      "/听歌 <歌曲名>或/s <歌曲名>：搜索音乐，例如：/s 我为祖国献石油"
+                      "/听歌 <歌曲名>或/s <歌曲名>：搜索音乐，例如：/s 我为祖国献石油\n" \
+                      "/风格 <歌曲名>或/t <歌曲名>:查看最相似的歌曲。"
     return WeixinUtils.make_singletext(tousername, fromusername, str_commandmenu)
 
 
@@ -94,6 +106,30 @@ def get_music(content_dict={}):
             return WeixinUtils.make_news(songlist, tousername, fromusername)
         else:
             return WeixinUtils.make_singletext(tousername, fromusername, "未找到相应的歌曲！")
+    else:
+        return WeixinUtils.make_singletext(tousername, fromusername, "请输入歌曲名！")
+
+
+def get_similar_songs(content_dict={}):
+    """
+    返回musictaster结果
+    :param content_dict:
+    :return:
+    """
+    text = content_dict["Content"]
+    tousername = content_dict["FromUserName"]
+    fromusername = content_dict["ToUserName"]
+    songname = re.compile(r'/[^ ]* ').sub("", text)
+    if len(songname) > 0 and songname != "/t":
+        str_similar_list = get_most_familar_songs(song_name=songname)
+        slist_obj = json.loads(str_similar_list)
+        if slist_obj['code'] == 200:
+            resp_text = '歌名\t相似度'
+            for song_item in slist_obj['result']:
+                resp_text += '\n%s\t%s' % (song_item['name'], song_item['similarity'])
+            return WeixinUtils.make_singletext(tousername, fromusername, resp_text)
+        else:
+            return WeixinUtils.make_singletext(tousername, fromusername, "未找到相应的歌曲！\n%s" % slist_obj['error_msg'])
     else:
         return WeixinUtils.make_singletext(tousername, fromusername, "请输入歌曲名！")
 

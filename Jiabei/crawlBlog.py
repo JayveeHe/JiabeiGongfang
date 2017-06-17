@@ -27,7 +27,7 @@ def get_archives(maxcount=10):
                         "http://jayveestorage.qiniudn.com/blogtitle.jpg")
     postlist.append(mainitem)
     for article in soup.find_all("a", "archive-article-title"):
-        item = NewsItem(baseurl + article["href"], article.text, "http://jayveehe.github.io/img/avatar.jpg")
+        item = NewsItem(baseurl + article["href"], article.text, "http://jayveehe.github.io/jayvee_avatar.jpg")
         # print count, ":", article
         # print article["href"]
         # print item.url

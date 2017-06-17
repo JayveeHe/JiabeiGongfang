@@ -1,7 +1,9 @@
 # encoding:utf8
 import json
+import os
+
 import requests
-from Jiabei import WeixinUtils, task_manager
+import sys
 
 __author__ = 'Jayvee'
 
@@ -9,6 +11,13 @@ from flask import Flask, request, make_response
 import hashlib
 
 app = Flask(__name__)
+abs_path = os.path.dirname(os.path.abspath(__file__))
+abs_father_path = os.path.dirname(abs_path)
+PROJECT_PATH = abs_path
+print 'Used file: %s\nProject path=%s' % (__file__, PROJECT_PATH)
+sys.path.append(PROJECT_PATH)
+
+from Jiabei import WeixinUtils, task_manager
 
 
 @app.route('/jiabei', methods=['GET', 'POST'])
@@ -64,4 +73,4 @@ def login_and_have_fun():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=909, debug=True)
+    app.run(host='0.0.0.0', port=9099, debug=False)
