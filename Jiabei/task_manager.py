@@ -124,9 +124,9 @@ def get_similar_songs(content_dict={}):
         str_similar_list = get_most_familar_songs(song_name=songname)
         slist_obj = json.loads(str_similar_list)
         if slist_obj['code'] == 200:
-            resp_text = '歌名\t相似度'
+            resp_text = '【歌名】\t【相似度】'
             for song_item in slist_obj['result']:
-                resp_text += '\n%s\t%s' % (song_item['name'], song_item['similarity'])
+                resp_text += '\n%s\t%s' % (song_item['name'], round(song_item['similarity'], 5))
             return WeixinUtils.make_singletext(tousername, fromusername, resp_text)
         else:
             return WeixinUtils.make_singletext(tousername, fromusername, "未找到相应的歌曲！\n%s" % slist_obj['error_msg'])
