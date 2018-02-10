@@ -49,6 +49,7 @@ def get_songdetails(songid):
     url = 'http://music.163.com/api/song/detail/?id=%s&ids=%%5B%s%%5D&csrf_token=Method=GET' % (songid, songid)
     req = urllib2.Request(url)
     req.add_header("Referer", "http://music.163.com/")
+    req.add_header("User-Agent","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36")
     resp = urllib2.urlopen(req)
     return resp.read()
 
